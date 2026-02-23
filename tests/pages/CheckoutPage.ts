@@ -4,20 +4,19 @@ export class CheckoutPage extends BasePage {
 
   async startCheckout() {
     await this.page.click('#checkout');
+    await this.page.waitForSelector('#first-name', { state: 'visible' });
   }
 
   async fillInformation() {
     await this.page.fill('#first-name','John');
-    await this.page.waitForTimeout(1000); // small wait to simulate user typing
     await this.page.fill('#last-name','Doe');
-    await this.page.waitForTimeout(1000); // small wait to simulate user typing
     await this.page.fill('#postal-code','12345');
-    await this.page.waitForTimeout(1000); // small wait to simulate user typing
     await this.page.click('#continue');
   }
 
   async finishOrder() {
     await this.page.click('#finish');
+    await this.page.waitForSelector('.complete-header', { state: 'visible' });
   }
 
   async isOrderComplete() {

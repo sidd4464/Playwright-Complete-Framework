@@ -4,6 +4,6 @@ export class BasePage {
   constructor(protected page: Page) {}
 
   async navigate(url: string) {
-    await this.page.goto(url);
+    await this.page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
   }
 }
