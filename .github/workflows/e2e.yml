@@ -40,6 +40,26 @@ jobs:
         if: always()
         run: npm run allure:report
 
+      - name: Attach videos to Pages report
+        if: always()
+        run: |
+          mkdir -p allure-report/videos
+          if [ -d "test-results/videos" ] && [ "$(ls -A test-results/videos)" ]; then
+            cp -r test-results/videos/* allure-report/videos/
+            {
+              echo "<!doctype html><html><head><meta charset='utf-8'><title>Execution Videos</title></head><body>";
+              echo "<h1>Execution Videos</h1><ul>";
+              for file in allure-report/videos/*.webm; do
+                [ -e "$file" ] || continue
+                name=$(basename "$file")
+                echo "<li><a href='./$name'>$name</a></li>";
+              done
+              echo "</ul></body></html>";
+            } > allure-report/videos/index.html
+          else
+            echo "<!doctype html><html><head><meta charset='utf-8'><title>Execution Videos</title></head><body><h1>No videos generated for this run.</h1></body></html>" > allure-report/videos/index.html
+          fi
+
       - name: Upload Allure report artifact
         if: always()
         uses: actions/upload-artifact@v4
