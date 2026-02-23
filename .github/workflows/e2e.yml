@@ -16,8 +16,9 @@ jobs:
       pages: write
       id-token: write
     env:
-      HEADLESS: "true"
+      HEADLESS: "false"
       SLOW_MO: "0"
+      VIDEO: "true"
 
     steps:
       - name: Checkout repository
@@ -30,9 +31,10 @@ jobs:
         run: |
           rm -rf allure-results
           rm -rf allure-report
+          rm -rf test-results/videos
 
-      - name: Run Cucumber tests
-        run: npm test
+      - name: Run Cucumber tests (headed via Xvfb)
+        run: xvfb-run --auto-servernum npm test
 
       - name: Generate Allure report
         if: always()
@@ -64,7 +66,17 @@ jobs:
           path: |
             allure-results
             allure-report
+            test-results/videos
           if-no-files-found: ignore
+
+      - name: Upload execution videos artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution-videos
+          path: test-results/videos
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload Pages artifact
         if: always()

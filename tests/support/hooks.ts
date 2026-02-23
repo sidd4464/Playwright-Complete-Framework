@@ -25,8 +25,17 @@ Before(async function (this: CustomWorld) {
     throw new Error("Browser is not initialized");
   }
 
+  const shouldRecordVideo = process.env.VIDEO !== "false";
+
   this.browser = sharedBrowser;
-  this.context = await sharedBrowser.newContext();
+  this.context = await sharedBrowser.newContext({
+    recordVideo: shouldRecordVideo
+      ? {
+          dir: "test-results/videos",
+          size: { width: 1280, height: 720 }
+        }
+      : undefined
+  });
   this.page = await this.context.newPage();
 
   this.loginPage = new LoginPage(this.page);
