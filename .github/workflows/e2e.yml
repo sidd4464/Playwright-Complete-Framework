@@ -17,7 +17,7 @@ jobs:
       id-token: write
     env:
       HEADLESS: "false"
-      SLOW_MO: "0"
+      SLOW_MO: "800"
       VIDEO: "true"
 
     steps:
